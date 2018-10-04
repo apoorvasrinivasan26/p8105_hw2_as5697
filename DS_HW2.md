@@ -19,6 +19,12 @@ library(tidyverse)
     ## ✖ dplyr::lag()    masks stats::lag()
 
 ``` r
+library(ggplot2)
+library(readxl)
+library(p8105.datasets)
+```
+
+``` r
 nyc_transit = read_csv(file = "./hw2_data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") 
 ```
 
@@ -40,7 +46,35 @@ nyc_transit = read_csv(file = "./hw2_data/NYC_Transit_Subway_Entrance_And_Exit_D
     ## See spec(...) for full column specifications.
 
 ``` r
-  nyc_transit = janitor::clean_names(nyc_transit)%>%
-    select(line:entry, ada)%>%
+  nyc_transit = janitor::clean_names(nyc_transit) %>%
+    select(line:entry, vending, ada) %>%
     mutate(entry = recode(entry, "YES" = TRUE, "NO" = FALSE ))
 ```
+
+We're given a dataset containing information about nyc transit subway entrance and exit details. After editing out what is not required for this homework, we now have a new dataset with variable that are line, station name, station lattitude, longitude, route 1 to 11, entrance type, entry, vending and compliance with ADA.
+
+Data cleaning steps
+
+-   Imported data using read\_csv through relative path to ensure reproducability
+-   Cleaned the variable names using the janitor function which converted all column names into lower snake case.
+-   Retained the required variables using select to declutter our data.
+-   Converted the entry variable from character to logical variable using recode.
+
+The dimensions of the data set are 1868 x 19.
+
+Are these data tidy?
+
+No, the data doesn't look tidy because the data for the route variable are spread across eleven columns which makes it difficult to read.
+
+Further questions:
+
+How many distinct stations are there?
+
+``` r
+distinct(nyc_transit, line, station_name, .keep_all = TRUE) %>%
+  nrow()
+```
+
+    ## [1] 465
+
+PROBLEM 2
