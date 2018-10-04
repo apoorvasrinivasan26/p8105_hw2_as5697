@@ -66,13 +66,40 @@ What proportion of station entrances / exits without vending allow entrance?
 
 
 
-```{r}
+```{r p1.4}
 no_vending = nyc_transit %>%
   filter(vending == "NO")
   proportion_no_vending = mean(no_vending$entry == TRUE)
   knitr::kable(proportion_no_vending)
 ```
 Therefore, 37.7% of stations with entrance don't have vending machines.
+
+Reformating the data 
+
+```{r p1.5}
+nyc_transit = gather(nyc_transit, key = route_number, value = route_name, route1:route11) %>%
+  separate(route_number, into = c("route_str", "route_number"), sep = 5) %>%
+  select(-route_str)
+```
+
+
+How many distinct stations serve the A train?
+```{r p1.6}
+  nyc_transit %>%
+  distinct(station_name, line, .keep_all = TRUE) %>%
+  filter(route_name == "A") %>%
+  nrow()
+```
+
+Of the stations that serve the A train, how many are ADA compliant?
+
+```{r}
+nyc_transit %>%
+  distinct(station_name, line, .keep_all = TRUE) %>%
+  filter(route_name == "A", ada == "TRUE") %>%
+  nrow()
+```
+
 
 
 PROBLEM 2

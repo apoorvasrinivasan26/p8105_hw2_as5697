@@ -7,14 +7,14 @@ Apoorva Srinivasan
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ──────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ───────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ─────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ──────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -104,5 +104,35 @@ no_vending = nyc_transit %>%
 |  0.3770492|
 
 Therefore, 37.7% of stations with entrance don't have vending machines.
+
+Reformating the data
+
+``` r
+nyc_transit = gather(nyc_transit, key = route_number, value = route_name, route1:route11) %>%
+  separate(route_number, into = c("route_str", "route_number"), sep = 5) %>%
+  select(-route_str)
+```
+
+How many distinct stations serve the A train?
+
+``` r
+  nyc_transit %>%
+  distinct(station_name, line, .keep_all = TRUE) %>%
+  filter(route_name == "A") %>%
+  nrow()
+```
+
+    ## [1] 60
+
+Of the stations that serve the A train, how many are ADA compliant?
+
+``` r
+nyc_transit %>%
+  distinct(station_name, line, .keep_all = TRUE) %>%
+  filter(route_name == "A", ada == "TRUE") %>%
+  nrow()
+```
+
+    ## [1] 17
 
 PROBLEM 2
