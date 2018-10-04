@@ -66,7 +66,7 @@ Are these data tidy?
 
 No, the data doesn't look tidy because the data for the route variable are spread across eleven columns which makes it difficult to read.
 
-Further questions:
+**Further questions:**
 
 How many distinct stations are there?
 
@@ -76,5 +76,33 @@ distinct(nyc_transit, line, station_name, .keep_all = TRUE) %>%
 ```
 
     ## [1] 465
+
+How many stations are ADA compliant?
+
+``` r
+ nyc_transit %>%
+  distinct(station_name, line, .keep_all = TRUE) %>% 
+  filter(ada == TRUE) %>% 
+  nrow()
+```
+
+    ## [1] 84
+
+No. of ADA stations are 84
+
+What proportion of station entrances / exits without vending allow entrance?
+
+``` r
+no_vending = nyc_transit %>%
+  filter(vending == "NO")
+  proportion_no_vending = mean(no_vending$entry == TRUE)
+  knitr::kable(proportion_no_vending)
+```
+
+|          x|
+|----------:|
+|  0.3770492|
+
+Therefore, 37.7% of stations with entrance don't have vending machines.
 
 PROBLEM 2
