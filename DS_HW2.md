@@ -7,14 +7,14 @@ Apoorva Srinivasan
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ───────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ──────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ──────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ─────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -136,6 +136,40 @@ nyc_transit %>%
 
 **PROBLEM 2**
 
+``` r
+trash_wheel = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", range = cell_cols("A:N"), col_names = TRUE) %>%
+  janitor::clean_names() %>% 
+  filter(!(dumpster == "NA")) %>% 
+  mutate(sports_balls = round(sports_balls)) %>% 
+  mutate(sports_balls = as.integer(sports_balls))
+```
+
+### Problem 2.2: Reading and cleaning precipitation data for 2016 and 2017
+
+``` r
+precipitation_2016 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2016 Precipitation", range = "A2:B14", col_names = TRUE) %>%
+  janitor::clean_names() %>% 
+  rename(precipitation = total) %>% 
+  filter(!is.na(precipitation)) %>% 
+  mutate(year = 2016)
+```
+
+``` r
+precipitation_2017 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2017 Precipitation", range = "A2:B14", col_names = TRUE) %>% 
+  janitor::clean_names() %>% 
+  rename(precipitation = total) %>% 
+  filter(!is.na(precipitation)) %>% 
+  mutate(year = 2017)
+```
+
+Combining datasets:
+
+``` r
+precipitation_combined = 
+  bind_rows(precipitation_2016, precipitation_2017) %>% 
+  mutate(month = month.name[month])
+```
+
 **PROBLEM 3**
 
 ``` r
@@ -175,27 +209,13 @@ All 50 states and 1 US Territory, the District of Columbia are represented in th
 What state is observed the most?
 
 ``` r
-brfss_data %>%
+most_obv = brfss_data %>%
   count(state) %>% 
-  arrange(desc(n, state))
+  arrange(desc(n, state)) %>%
+  head(1)
 ```
 
-    ## # A tibble: 51 x 2
-    ##    state     n
-    ##    <chr> <int>
-    ##  1 NJ      146
-    ##  2 FL      122
-    ##  3 NC      115
-    ##  4 WA       97
-    ##  5 MD       90
-    ##  6 MA       79
-    ##  7 TX       71
-    ##  8 NY       65
-    ##  9 SC       63
-    ## 10 CO       59
-    ## # ... with 41 more rows
-
-The most observed state is NJ
+The most observed state is NJ, 146
 
 In 2002, what is the median of the “Excellent” response value?
 
@@ -211,10 +231,10 @@ The median of "excellent" responses in 2002 is 23.6
 Make a histogram of “Excellent” response values in the year 2002.
 
 ``` r
-hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values" )
+hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values", col = c("grey") )
 ```
 
-![](DS_HW2_files/figure-markdown_github/unnamed-chunk-7-1.png)
+![](DS_HW2_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010.
 
@@ -226,4 +246,4 @@ filter(county %in% c("NY - Queens County", "NY - New York County" )) %>%
   labs(main = "Scatterplot showing proportion of Excellent response values in New York County and Queens County", x = "year", y = "Proportion of Excellent Responses")
 ```
 
-![](DS_HW2_files/figure-markdown_github/unnamed-chunk-8-1.png)
+![](DS_HW2_files/figure-markdown_github/unnamed-chunk-12-1.png)

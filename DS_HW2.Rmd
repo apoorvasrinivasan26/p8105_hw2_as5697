@@ -14,6 +14,7 @@ library(readxl)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ```{r p1.1}
 
 nyc_transit = read_csv(file = "./hw2_data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") 
@@ -21,7 +22,6 @@ nyc_transit = read_csv(file = "./hw2_data/NYC_Transit_Subway_Entrance_And_Exit_D
     select(line:entry, vending, ada) %>%
     mutate(entry = recode(entry, "YES" = TRUE, "NO" = FALSE ))
   
-   
 ```
 
 We're given a dataset containing information about nyc transit subway entrance and exit details. After editing out what is not required for this homework, we now have a new dataset with variable that are line, station name, station lattitude, longitude, route 1 to 11, entrance type, entry, vending and compliance with ADA.
@@ -102,7 +102,40 @@ nyc_transit %>%
 
 
 __PROBLEM 2__
+```{r}
+trash_wheel = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", range = cell_cols("A:N"), col_names = TRUE) %>%
+  janitor::clean_names() %>% 
+  filter(!(dumpster == "NA")) %>% 
+  mutate(sports_balls = round(sports_balls)) %>% 
+  mutate(sports_balls = as.integer(sports_balls))
+```
 
+
+### Problem 2.2: Reading and cleaning precipitation data for 2016 and 2017
+```{r}
+precipitation_2016 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2016 Precipitation", range = "A2:B14", col_names = TRUE) %>%
+  janitor::clean_names() %>% 
+  rename(precipitation = total) %>% 
+  filter(!is.na(precipitation)) %>% 
+  mutate(year = 2016)
+```
+
+```{r}
+precipitation_2017 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2017 Precipitation", range = "A2:B14", col_names = TRUE) %>% 
+  janitor::clean_names() %>% 
+  rename(precipitation = total) %>% 
+  filter(!is.na(precipitation)) %>% 
+  mutate(year = 2017)
+```
+
+
+Combining datasets:
+
+```{r}
+precipitation_combined = 
+  bind_rows(precipitation_2016, precipitation_2017) %>% 
+  mutate(month = month.name[month])
+```
 
 
 __PROBLEM 3__
@@ -141,11 +174,12 @@ All 50 states and 1 US Territory, the District of Columbia are represented in th
 What state is observed the most?
 
 ```{r}
-brfss_data %>%
+most_obv = brfss_data %>%
   count(state) %>% 
-  arrange(desc(n, state))
+  arrange(desc(n, state)) %>%
+  head(1)
 ```
-The most observed state is NJ
+The most observed state is `r most_obv`
 
 In 2002, what is the median of the “Excellent” response value?
 
@@ -161,7 +195,7 @@ The median of "excellent" responses in 2002 is `r median(excellent_2002$excellen
 Make a histogram of “Excellent” response values in the year 2002.
 
 ```{r}
-hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values" )
+hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values", col = c("grey") )
 ```
 
 
