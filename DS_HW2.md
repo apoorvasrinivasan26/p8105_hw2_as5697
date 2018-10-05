@@ -21,7 +21,6 @@ library(tidyverse)
 ``` r
 library(ggplot2)
 library(readxl)
-library(p8105.datasets)
 ```
 
 ``` r
@@ -135,4 +134,23 @@ nyc_transit %>%
 
     ## [1] 17
 
-PROBLEM 2
+**PROBLEM 2**
+
+**PROBLEM 3**
+
+``` r
+library(p8105.datasets)
+
+#View(p8105.datasets::brfss_smart2010)
+```
+
+``` r
+brfss_data = p8105.datasets::brfss_smart2010 %>%
+  janitor::clean_names() %>%
+  rename(resp_id = respid, location_abbreviation = locationabbr, location_desc = locationdesc) %>% 
+  filter(topic == "Overall Health") %>%
+  select(-class, -topic, -question, -sample_size, -c(confidence_limit_low:geo_location)) %>%
+  spread(key = response, value = data_value) %>%
+  janitor::clean_names() %>%
+  mutate(excellent_or_verygood = excellent + very_good)
+```

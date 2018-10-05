@@ -8,7 +8,6 @@ output: github_document
 library(tidyverse)
 library(ggplot2)
 library(readxl)
-library(p8105.datasets)
 ```
 
 ```{r setup, include=FALSE}
@@ -102,8 +101,30 @@ nyc_transit %>%
 
 
 
-PROBLEM 2
+__PROBLEM 2__
 
+
+
+__PROBLEM 3__
+
+```{r p3.1}
+library(p8105.datasets)
+
+#View(p8105.datasets::brfss_smart2010)
+```
+
+
+```{r}
+brfss_data = p8105.datasets::brfss_smart2010 %>%
+  janitor::clean_names() %>%
+  rename(resp_id = respid, location_abbreviation = locationabbr, location_desc = locationdesc) %>% 
+  filter(topic == "Overall Health") %>%
+  select(-class, -topic, -question, -sample_size, -c(confidence_limit_low:geo_location)) %>%
+  spread(key = response, value = data_value) %>%
+  janitor::clean_names() %>%
+  mutate(excellent_or_verygood = excellent + very_good)
+
+```
 
 
 
