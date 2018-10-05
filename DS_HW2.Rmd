@@ -35,7 +35,7 @@ Data cleaning steps:
 
 The dimensions of the data set are  `r nrow(nyc_transit)` x `r ncol(nyc_transit)`. 
 
-Are these data tidy?
+* Are these data tidy?
 
 No, the data doesn't look tidy because the data for the route variable are spread across eleven columns which makes it difficult to read. 
 
@@ -97,7 +97,7 @@ nyc_transit = gather(nyc_transit, key = route_number, value = route_name, route1
 
 * Of the stations that serve the A train, how many are ADA compliant?
 
-```{r}
+```{r p1.7}
 nyc_transit %>%
   distinct(station_name, line, .keep_all = TRUE) %>%
   filter(route_name == "A", ada == "TRUE") %>%
@@ -110,7 +110,8 @@ Of the 60 stations that serve the A train, 17 are ADA compliant.
 __PROBLEM 2__
 
 _Importing and cleaning Mr. Trash Wheel dataset_
-```{r}
+
+```{r p2.1}
 trash_wheel = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", range = cell_cols("A:N"), col_names = TRUE) %>%
   janitor::clean_names() %>% 
   #omiting rows that does not include dumpster specific data using ! function
@@ -122,7 +123,7 @@ trash_wheel = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx
 
 
 _Importing and cleaning precipitation data for 2016 and 2017_
-```{r}
+```{r p2.2}
 precipitation_2016 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2016 Precipitation", range = "A2:B14", col_names = TRUE) %>%
   janitor::clean_names() %>% 
   rename(precipitation = total) %>% 
@@ -130,7 +131,7 @@ precipitation_2016 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-
   mutate(year = 2016)
 ```
 
-```{r}
+```{r p2.3}
 precipitation_2017 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "2017 Precipitation", range = "A2:B14", col_names = TRUE) %>% 
   janitor::clean_names() %>% 
   rename(precipitation = total) %>% 
@@ -140,7 +141,7 @@ precipitation_2017 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-
 
 _Combining precipitation datasets:_
 
-```{r}
+```{r p2.4}
 precipitation_combined = 
   bind_rows(precipitation_2016, precipitation_2017) %>% 
   mutate(month = month.name[month])
@@ -158,14 +159,14 @@ The precipitation datasets for the year 2016 has `r nrow(precipitation_2016)` ro
 
 * For available data, what was the total precipitation in 2017? 
 
-```{r}
+```{r p2.5}
 sum(precipitation_2017$precipitation)
 ```
 The total precipitation in 2017 is `r sum (precipitation_2017$precipitation)`
 
 * What was the median number of sports balls in a dumpster in 2016?
 
-```{r}
+```{r p2.6}
   trash_wheel %>%  
   filter(year == 2016) %>% 
   pull(sports_balls) %>% 
@@ -177,15 +178,14 @@ The median number of sports balls in a dumpster in 2016 are 26.
 
 __PROBLEM 3__
 
-```{r p3.1}
-library(p8105.datasets)
 
-#View(p8105.datasets::brfss_smart2010)
-```
 
 _Reading and cleaning dataset as instructed_
+The code chunk below creates a dataframe using the data from the dataset package given and manipulates as instructed using filter and select. Spread function was used for responses to make it more readable.
 
-```{r}
+```{r p3.1}
+library(p8105.datasets)
+#View(p8105.datasets::brfss_smart2010)
 brfss_data = p8105.datasets::brfss_smart2010 %>%
   janitor::clean_names() %>%
   rename("state" = locationabbr, "county" = locationdesc) %>% 
@@ -201,7 +201,7 @@ Further questions:
 
 * How many unique locations are included in the dataset? Is every state represented? 
 
-```{r}
+```{r p3.2}
 brfss_data %>%
   distinct(state) %>% 
   count()
@@ -211,7 +211,7 @@ All 50 states and 1 US Territory, the District of Columbia are represented in th
 
 * What state is observed the most?
 
-```{r}
+```{r p3.3}
 most_obv = brfss_data %>%
   count(state) %>% 
   arrange(desc(n, state)) %>%
@@ -221,7 +221,7 @@ The most observed state is `r most_obv`
 
 * In 2002, what is the median of the “Excellent” response value?
 
-```{r}
+```{r p3.4}
 excellent_2002 =
   brfss_data %>% 
   filter(year == 2002) %>%
@@ -232,14 +232,14 @@ The median of "excellent" responses in 2002 is `r median(excellent_2002$excellen
 
 * Make a histogram of “Excellent” response values in the year 2002.
 
-```{r}
+```{r p3.5}
 hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values", col = c("grey") )
 ```
 
 
 * Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010.
 
-```{r}
+```{r p3.6}
 brfss_data %>%
 filter(county %in% c("NY - Queens County", "NY - New York County" )) %>% 
   ggplot(., aes(x = year, y = excellent)) +

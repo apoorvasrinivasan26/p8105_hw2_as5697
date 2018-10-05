@@ -61,7 +61,7 @@ Data cleaning steps:
 
 The dimensions of the data set are 1868 x 19.
 
-Are these data tidy?
+-   Are these data tidy?
 
 No, the data doesn't look tidy because the data for the route variable are spread across eleven columns which makes it difficult to read.
 
@@ -209,15 +209,11 @@ The median number of sports balls in a dumpster in 2016 are 26.
 
 **PROBLEM 3**
 
+*Reading and cleaning dataset as instructed* The code chunk below creates a dataframe using the data from the dataset package given and manipulates as instructed using filter and select. Spread function was used for responses to make it more readable.
+
 ``` r
 library(p8105.datasets)
-
 #View(p8105.datasets::brfss_smart2010)
-```
-
-*Reading and cleaning dataset as instructed*
-
-``` r
 brfss_data = p8105.datasets::brfss_smart2010 %>%
   janitor::clean_names() %>%
   rename("state" = locationabbr, "county" = locationdesc) %>% 
@@ -273,7 +269,7 @@ The median of "excellent" responses in 2002 is 23.6
 hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values", col = c("grey") )
 ```
 
-![](DS_HW2_files/figure-markdown_github/unnamed-chunk-13-1.png)
+![](DS_HW2_files/figure-markdown_github/p3.5-1.png)
 
 -   Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010.
 
@@ -285,6 +281,6 @@ filter(county %in% c("NY - Queens County", "NY - New York County" )) %>%
   labs(main = "Scatterplot showing proportion of Excellent response values in New York County and Queens County", x = "year", y = "Proportion of Excellent Responses")
 ```
 
-![](DS_HW2_files/figure-markdown_github/unnamed-chunk-14-1.png)
+![](DS_HW2_files/figure-markdown_github/p3.6-1.png)
 
 It can be seen that the New York county has higher excellent response values for each year as compared to the Queens county.
