@@ -128,6 +128,8 @@ precipitation_2017 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-
   mutate(year = 2017)
 ```
 
+Mr. Trash wheel is a water wheel vessel set up in 2014 designed to remove trash flowing down the Jones Fall river in Baltimore state. The data was collected a few times a month from May 2014 through July 2018. The given dataset contains information on dumpster number, date of trash collection, the amount of trash(by weight and volume), it's contents(plastic bottles, cigarette buds,bags etc.) and the approximate number of homes powered using the energy generated from the trash. The key variables would be the date, amount(by weight and volume) and the number of homes powered. After cleaning the data, we get a new datset with `r nrow(trash_wheel)` rows and `r ncol(trash_wheel)` columns. The approximate total number of homes that were powered by using `r trash_wheel %>% pull(weight_tons) %>% sum()` tons of trash collected by Mr. Trash Wheel are `r trash_wheel %>% pull(homes_powered) %>% sum()`.
+
 
 Combining datasets:
 
@@ -136,6 +138,24 @@ precipitation_combined =
   bind_rows(precipitation_2016, precipitation_2017) %>% 
   mutate(month = month.name[month])
 ```
+
+* For available data, what was the total precipitation in 2017? 
+
+```{r}
+sum(precipitation_2017$precipitation)
+```
+The total precipitation in 2017 is `r sum (precipitation_2017$precipitation)`
+
+* What was the median number of sports balls in a dumpster in 2016?
+
+```{r}
+  trash_wheel %>%  
+  filter(year == 2016) %>% 
+  pull(sports_balls) %>% 
+  median
+```
+
+The median number of sports balls in a dumpster in 2016 are 26.
 
 
 __PROBLEM 3__

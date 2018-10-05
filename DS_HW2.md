@@ -7,14 +7,14 @@ Apoorva Srinivasan
 library(tidyverse)
 ```
 
-    ## ── Attaching packages ──────────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
+    ## ── Attaching packages ──────────────────────────────────── tidyverse 1.2.1 ──
 
     ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
     ## ✔ tibble  1.4.2     ✔ dplyr   0.7.6
     ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
     ## ✔ readr   1.1.1     ✔ forcats 0.3.0
 
-    ## ── Conflicts ─────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ─────────────────────────────────────── tidyverse_conflicts() ──
     ## ✖ dplyr::filter() masks stats::filter()
     ## ✖ dplyr::lag()    masks stats::lag()
 
@@ -162,6 +162,8 @@ precipitation_2017 = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-
   mutate(year = 2017)
 ```
 
+Mr. Trash wheel is a water wheel vessel set up in 2014 designed to remove trash flowing down the Jones Fall river in Baltimore state. The data was collected a few times a month from May 2014 through July 2018. The given dataset contains information on dumpster number, date of trash collection, the amount of trash(by weight and volume), it's contents(plastic bottles, cigarette buds,bags etc.) and the approximate number of homes powered using the energy generated from the trash. The key variables would be the date, amount(by weight and volume) and the number of homes powered. After cleaning the data, we get a new datset with 285 rows and 14 columns. The approximate total number of homes that were powered by using 934.94 tons of trash collected by Mr. Trash Wheel are 1.195066710^{4}.
+
 Combining datasets:
 
 ``` r
@@ -169,6 +171,29 @@ precipitation_combined =
   bind_rows(precipitation_2016, precipitation_2017) %>% 
   mutate(month = month.name[month])
 ```
+
+-   For available data, what was the total precipitation in 2017?
+
+``` r
+sum(precipitation_2017$precipitation)
+```
+
+    ## [1] 32.93
+
+The total precipitation in 2017 is 32.93
+
+-   What was the median number of sports balls in a dumpster in 2016?
+
+``` r
+  trash_wheel %>%  
+  filter(year == 2016) %>% 
+  pull(sports_balls) %>% 
+  median
+```
+
+    ## [1] 26
+
+The median number of sports balls in a dumpster in 2016 are 26.
 
 **PROBLEM 3**
 
@@ -234,7 +259,7 @@ Make a histogram of “Excellent” response values in the year 2002.
 hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values", col = c("grey") )
 ```
 
-![](DS_HW2_files/figure-markdown_github/unnamed-chunk-11-1.png)
+![](DS_HW2_files/figure-markdown_github/unnamed-chunk-13-1.png)
 
 Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010.
 
@@ -246,4 +271,4 @@ filter(county %in% c("NY - Queens County", "NY - New York County" )) %>%
   labs(main = "Scatterplot showing proportion of Excellent response values in New York County and Queens County", x = "year", y = "Proportion of Excellent Responses")
 ```
 
-![](DS_HW2_files/figure-markdown_github/unnamed-chunk-12-1.png)
+![](DS_HW2_files/figure-markdown_github/unnamed-chunk-14-1.png)
