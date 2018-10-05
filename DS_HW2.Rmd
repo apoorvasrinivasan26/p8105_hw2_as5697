@@ -1,22 +1,20 @@
 ---
-title: "Homework_2"
+title: "Homework 2"
 author: "_Apoorva Srinivasan_"
 date: "10/2/2018"
 output: github_document
 ---
-```{r}
+```{r loading, echo = FALSE}
 library(tidyverse)
 library(ggplot2)
 library(readxl)
 ```
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
 
+#PROBLEM 1
 
+The code chunk below imports NYC transit subway data and performs some manipulation as instructed using select and mutate functions:
 ```{r p1.1}
-
 nyc_transit = read_csv(file = "./hw2_data/NYC_Transit_Subway_Entrance_And_Exit_Data.csv") 
   nyc_transit = janitor::clean_names(nyc_transit) %>%
     select(line:entry, vending, ada) %>%
@@ -33,7 +31,7 @@ Data cleaning steps:
 3.  Retained the required variables using select to declutter our data.
 4.  Converted the entry variable from character to logical variable using recode.
 
-The dimensions of the data set are  `r nrow(nyc_transit)` x `r ncol(nyc_transit)`. 
+The dimensions of the data set are  __`r nrow(nyc_transit)` x `r ncol(nyc_transit)`.__ 
 
 * Are these data tidy?
 
@@ -46,9 +44,11 @@ _Further questions:_
 ```{r p1.2}
 distinct(nyc_transit, line, station_name, .keep_all = TRUE) %>%
   nrow()
+#distinct funtion was used here to pick the distinct stations by line and station name
 ```
 
-The number of distinct stations are 465
+
+There are __465__ distinct stations.
 
 * How many stations are ADA compliant?
 
@@ -60,7 +60,7 @@ The number of distinct stations are 465
 
 ```
 
-84 stations are ADA compliant.
+__84__ stations are ADA compliant.
 
 
 * What proportion of station entrances / exits without vending allow entrance?
@@ -74,9 +74,11 @@ no_vending = nyc_transit %>%
   knitr::kable(proportion_no_vending)
 ```
 
-We can infer that 37.7% of stations with entrance don't have vending machines.
+We can infer that __37.7%__ of stations with entrance don't have vending machines.
 
 _Reformating the data_ 
+
+The code chunk below contains the code for reformating data so route number and route name are distinct variables using separate funtion then then further cleaning by removing a column using select.
 
 ```{r p1.5}
 nyc_transit = gather(nyc_transit, key = route_number, value = route_name, route1:route11) %>%
@@ -90,9 +92,9 @@ nyc_transit = gather(nyc_transit, key = route_number, value = route_name, route1
   nyc_transit %>%
   distinct(station_name, line, .keep_all = TRUE) %>%
   filter(route_name == "A") %>%
-  nrow()
+  nrow() 
 ```
-60 distinct stations serve the A train
+__60__ distinct stations serve the A train
 
 
 * Of the stations that serve the A train, how many are ADA compliant?
@@ -103,14 +105,14 @@ nyc_transit %>%
   filter(route_name == "A", ada == "TRUE") %>%
   nrow()
 ```
-Of the 60 stations that serve the A train, 17 are ADA compliant.
+Of the 60 stations that serve the A train, __17__ are ADA compliant.
 
 
 
-__PROBLEM 2__
+#PROBLEM 2
 
 _Importing and cleaning Mr. Trash Wheel dataset_
-
+The code chunk below imports the most recent Mr. Trash Wheel dataset, performs manipulation such as omiting unrequired rows and conversion of variables. 
 ```{r p2.1}
 trash_wheel = read_excel("./hw2_data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet = "Mr. Trash Wheel", range = cell_cols("A:N"), col_names = TRUE) %>%
   janitor::clean_names() %>% 
@@ -150,10 +152,10 @@ precipitation_combined =
 
 
 
-Mr. Trash wheel is a water wheel vessel set up in 2014 designed to remove trash flowing down the Jones Fall river in Baltimore state. The data was collected a few times a month from May 2014 through July 2018. The given dataset contains information on dumpster number, date of trash collection, the amount of trash(by weight and volume), it's contents(plastic bottles, cigarette buds,bags etc.) and the approximate number of homes powered using the energy generated from the trash. The key variables would be the date, amount(by weight and volume) and the number of homes powered. After cleaning the data, we get a new datset with `r nrow(trash_wheel)` rows and `r ncol(trash_wheel)` columns. The approximate total number of homes that were powered by using `r trash_wheel %>% pull(weight_tons) %>% sum()` tons of trash collected by Mr. Trash Wheel over the four years are `r trash_wheel %>% pull(homes_powered) %>% sum()`.
+Mr. Trash wheel is a water wheel vessel set up in 2014 designed to remove trash flowing down the Jones Fall river in Baltimore state. The data was collected a few times a month from May 2014 through July 2018. The given dataset contains information on dumpster number, date of trash collection, the amount of trash(by weight and volume), it's contents(plastic bottles, cigarette buds,bags etc.) and the approximate number of homes powered using the energy generated from the trash. The key variables would be the __date, amount(by weight and volume) and the number of homes powered.__ After cleaning the data, we get a new datset with __`r nrow(trash_wheel)`__ rows and __`r ncol(trash_wheel)`__ columns. The approximate total number of homes that were powered by using __`r trash_wheel %>% pull(weight_tons) %>% sum()`__ tons of trash collected by Mr. Trash Wheel over the four years are __`r trash_wheel %>% pull(homes_powered) %>% sum()`.__
 
 
-The precipitation datasets for the year 2016 has `r nrow(precipitation_2016)` rows and `r ncol(precipitation_2016)` columns and for the year 2017 has `r nrow(precipitation_2017)` rows and `r ncol(precipitation_2017)` column.  The mean precipitation for the year 2016 and 2017 is `r mean(precipitation_2016$precipitation)` and `r mean(precipitation_2017$precipitation)` respectively. The key variables for both the datasets are month, corresponding precipitation for that month and the year. The combined precipitation dataset for 2016 and 2017 includes `r nrow(precipitation_combined)` observations for `r ncol(precipitation_combined)` variables.  The total precipitation in 2016 and 2017 was `r sum(precipitation_combined$precipitation)`.
+The precipitation datasets for the year 2016 has __`r nrow(precipitation_2016)` rows and `r ncol(precipitation_2016)`__ columns and for the year 2017 has __`r nrow(precipitation_2017)` rows and `r ncol(precipitation_2017)` column.__  The mean precipitation for the year 2016 and 2017 is __`r mean(precipitation_2016$precipitation)` and `r mean(precipitation_2017$precipitation)`__ respectively. The key variables for both the datasets are month, corresponding precipitation for that month and the year. The combined precipitation dataset for 2016 and 2017 includes `r nrow(precipitation_combined)` observations for `r ncol(precipitation_combined)` variables.  The total precipitation in 2016 and 2017 was __`r sum(precipitation_combined$precipitation)`.__
 
 
 
@@ -162,7 +164,7 @@ The precipitation datasets for the year 2016 has `r nrow(precipitation_2016)` ro
 ```{r p2.5}
 sum(precipitation_2017$precipitation)
 ```
-The total precipitation in 2017 is `r sum (precipitation_2017$precipitation)`
+The total precipitation in 2017 is __`r sum (precipitation_2017$precipitation)`__
 
 * What was the median number of sports balls in a dumpster in 2016?
 
@@ -173,14 +175,16 @@ The total precipitation in 2017 is `r sum (precipitation_2017$precipitation)`
   median
 ```
 
-The median number of sports balls in a dumpster in 2016 are 26.
+The median number of sports balls in a dumpster in 2016 are __26.__
 
 
-__PROBLEM 3__
+#PROBLEM 3
 
 
 
 _Reading and cleaning dataset as instructed_
+
+
 The code chunk below creates a dataframe using the data from the dataset package given and manipulates as instructed using filter and select. Spread function was used for responses to make it more readable.
 
 ```{r p3.1}
@@ -197,7 +201,7 @@ brfss_data = p8105.datasets::brfss_smart2010 %>%
 
 ```
 
-Further questions:
+_Further questions:_
 
 * How many unique locations are included in the dataset? Is every state represented? 
 
@@ -207,7 +211,7 @@ brfss_data %>%
   count()
 ```
 
-All 50 states and 1 US Territory, the District of Columbia are represented in the Table.
+__All 50 states and 1 US Territory, the District of Columbia are represented in the Table.__
 
 * What state is observed the most?
 
@@ -217,7 +221,7 @@ most_obv = brfss_data %>%
   arrange(desc(n, state)) %>%
   head(1)
 ```
-The most observed state is `r most_obv`
+The most observed state is __`r most_obv`__
 
 * In 2002, what is the median of the “Excellent” response value?
 
@@ -228,13 +232,16 @@ excellent_2002 =
   select(excellent) 
 ```
 
-The median of "excellent" responses in 2002 is `r median(excellent_2002$excellent, na.rm = TRUE)`
+The median of "excellent" responses in 2002 is __`r median(excellent_2002$excellent, na.rm = TRUE)`__
 
 * Make a histogram of “Excellent” response values in the year 2002.
 
 ```{r p3.5}
-hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent values", col = c("grey") )
+hist(excellent_2002$excellent, main = " Excellent response values in 2002", xlab = "excellent response values", col = c("grey") )
 ```
+
+From the graph above, we can see that it follows somewhat of a normal distribution with maximum excellent response rates between 20-25. This means that about that about 20-30% of the population from around 60 different counties in 2002 reported that their overall health was excellent. 
+
 
 
 * Make a scatterplot showing the proportion of “Excellent” response values in New York County and Queens County (both in NY State) in each year from 2002 to 2010.
