@@ -147,10 +147,63 @@ library(p8105.datasets)
 ``` r
 brfss_data = p8105.datasets::brfss_smart2010 %>%
   janitor::clean_names() %>%
-  rename(resp_id = respid, location_abbreviation = locationabbr, location_desc = locationdesc) %>% 
+  rename("state" = locationabbr, "county" = locationdesc) %>% 
   filter(topic == "Overall Health") %>%
   select(-class, -topic, -question, -sample_size, -c(confidence_limit_low:geo_location)) %>%
   spread(key = response, value = data_value) %>%
   janitor::clean_names() %>%
   mutate(excellent_or_verygood = excellent + very_good)
 ```
+
+Further questions:
+
+How many unique locations are included in the dataset? Is every state represented?
+
+``` r
+brfss_data %>%
+  distinct(state) %>% 
+  count()
+```
+
+    ## # A tibble: 1 x 1
+    ##       n
+    ##   <int>
+    ## 1    51
+
+All 50 states and 1 US Territory, the District of Columbia are represented in the Table.
+
+What state is observed the most?
+
+``` r
+brfss_data %>%
+  count(state) %>% 
+  arrange(desc(n, state))
+```
+
+    ## # A tibble: 51 x 2
+    ##    state     n
+    ##    <chr> <int>
+    ##  1 NJ      146
+    ##  2 FL      122
+    ##  3 NC      115
+    ##  4 WA       97
+    ##  5 MD       90
+    ##  6 MA       79
+    ##  7 TX       71
+    ##  8 NY       65
+    ##  9 SC       63
+    ## 10 CO       59
+    ## # ... with 41 more rows
+
+The most observed state is NJ
+
+In 2002, what is the median of the “Excellent” response value?
+
+``` r
+excellent_2002 =
+  brfss_data %>% 
+  filter(year == 2002) %>%
+  select(excellent) 
+```
+
+The median of "excellent" responses in 2002 is 23.6
